@@ -10,7 +10,7 @@ The system’s objective was to precisely control the **azimuth and elevation** 
 The SCS serves as the **core control unit** between the Trajectory Control Computer (TCC) and the actuation subsystems.  
 It processes **sensor data**, executes **PID-based control algorithms**, and generates **motor drive commands** to achieve stable and responsive motion control.  
 
-The control loop operates deterministically with a **420µs timing cycle**, maintaining closed-loop synchronization between command input, feedback sensors, and motor output.
+The control loop operates deterministically, maintaining closed-loop synchronization between command input, feedback sensors, and motor output.
 
 ---
 
@@ -37,7 +37,7 @@ The control loop operates deterministically with a **420µs timing cycle**, main
 ---
 
 ##  Implementation Summary
-- Implemented **real-time closed-loop control** at 420 µs timing interval.  
+- Implemented **real-time closed-loop control** at fix timing interval.  
 - Designed **control modes** for stabilized operation using gyro feedback compensation
 - Developed **firmware modules** for:
   - Drive computation and scaling
