@@ -53,10 +53,4 @@ The control loop operates deterministically with a **420µs timing cycle**, main
 - Successfully integrated the system with the Trajectory Control Computer (TCC).  
 - Demonstrated operational reliability during **vibration and rough terrain trials**.
 
----
 
-##  Contact
-**Muhammad Huzaifa**  
-Embedded Systems Designer | Islamabad, Pakistan  
-📧 [huzaifazahid888@gmail.com](mailto:huzaifazahid888@gmail.com)  
-🔗 [linkedin.com/in/huzaifa-engineer](https://linkedin.com/in/huzaifa-engineer)
