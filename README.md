@@ -1,56 +1,25 @@
-# **Stabilization Control System (SCS)**
+# Stabilization Control System (SCS)
 
-##  Objective
-The Stabilization Control System (SCS) project involved designing and developing a **real-time embedded control system** for **multi-axis stabilization**.  
-The system’s objective was to precisely control the **azimuth and elevation** axes under different operational modes — including **basic positioning** and **stabilized tracking modes** — ensuring accurate targeting and stability even in dynamic operating conditions.
+This is a real-time embedded control system for a 2-DOF (azimuth and elevation) stabilization platform on a mobile system. The goal was to keep the platform pointed accurately and stay stable even while the vehicle it's mounted on is moving or going over rough terrain.
 
----
+## What it does
 
-##  Project Overview
-The SCS serves as the **core control unit** between the Trajectory Control Computer (TCC) and the actuation subsystems.  
-It processes **sensor data**, executes **PID-based control algorithms**, and generates **motor drive commands** to achieve stable and responsive motion control.  
+The SCS sits between the Trajectory Control Computer (TCC), which tells it where to point, and the motors that actually move the platform. It takes the commanded target, reads sensor feedback, runs a control loop, and drives the motors to reach and hold that position. The whole loop runs on a fixed timing schedule so control timing stays predictable, since any drift here directly affects targeting accuracy.
 
-The control loop operates deterministically, maintaining closed-loop synchronization between command input, feedback sensors, and motor output.
+It also acts as the communication link between the different subsystems and the master device, managing all data exchange over CAN bus with precise timing across more than 40 different message IDs, each tied to a different assembly in the system. It reads and processes data from each of these and acts on it accordingly.
 
----
+## How it's built
 
-##  Skills Demonstrated
-- Real-time **embedded firmware design** using STM32 microcontroller.  
-- Development and tuning of **cascaded PID controllers** for azimuth and elevation stabilization.  
-- Implementation of **sensor fusion** using gyro and encoder feedback for accurate angular control.  
-- Integration of **CAN Bus**, **SPI**, and **I2C** communication interfaces for subsystem coordination.  
-- Experience in **low-level debugging** using ST-Link, oscilloscopes, and CAN bus sniffers.  
-- Design of **fault-safe control logic** for mission-critical embedded systems.  
+- Firmware written in C++ on an STM32 microcontroller, with a fixed scheduling slot for sensing, I/O, and communication. Every control cycle runs at a fixed time interval instead of a free-running loop, so timing stays consistent.
+- Control is done through a nested PID setup: a fast inner rate loop (2.1 ms) handles disturbance rejection, and a slower outer position loop (25.2 ms) handles precise tracking.
+- A Kalman filter fuses high frequency gyroscope data with absolute encoder feedback, so the controller works off a clean state estimate instead of raw, noisy sensor data.
+- Communication runs over CAN bus. I wrote a bare-metal driver for four MCP2518FD CAN controllers set up in a redundant primary/secondary configuration, so one CAN failure doesn't bring the whole system down.
+- Added watchdog supervision and power sequencing logic so the system boots up safely and can recover from a fault without needing a manual reset.
 
----
+## Tools used
 
-##  Tools & Technologies Used
-| Category | Tools / Technologies |
-|-----------|----------------------|
-| **Microcontroller** | STM32 (ARM Cortex-M4) |
-| **Programming Language** | C++ |
-| **Control Algorithm** | Cascaded PID Controller |
-| **Communication Interfaces** | CAN, SPI, I2C |
-| **Development Tools** | STM32CubeIDE, Logic Analyzer, ST-Link |
-| **Testing Equipment** | Oscilloscope, CAN Analyzer |
+STM32CubeIDE, C++, MCP2518FD CAN controllers, MCP23S17 IO Expander, oscilloscope, logic analyzer, CAN sniffer, ST-Link.
 
----
+## Result
 
-##  Implementation Summary
-- Implemented **real-time closed-loop control** at fix timing interval.  
-- Designed **control modes** for stabilized operation using gyro feedback compensation
-- Developed **firmware modules** for:
-  - Drive computation and scaling
-  - Gyro filtering and data fusion
-  - CAN message parsing and response
-  - Safety limit handling
-
----
-
-##  Results & Testing
-- Achieved **smooth and stable motion** with steady-state error under **5%** during testing.  
-- Verified **loop timing consistency** using logic analyzer traces.  
-- Successfully integrated the system with the Trajectory Control Computer (TCC).  
-- Demonstrated operational reliability during **vibration and rough terrain trials**.
-
-
+The system holds under 2% steady-state error under dynamic disturbance, and was tested against real vibration and movement conditions before being integrated with the rest of the platform.
